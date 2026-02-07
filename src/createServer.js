@@ -25,8 +25,17 @@ function createServer() {
     const relativeFilePath = pathname.replace(/^\/file\/?/, '');
 
     if (!relativeFilePath) {
-      res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end('File Not Found');
+      // Serve index.html when relativeFilePath is empty
+      fs.readFile('public/index.html', (err, data) => {
+        if (err) {
+          res.writeHead(404, { 'Content-Type': 'text/plain' });
+          res.end('File Not Found');
+
+          return;
+        }
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end(data);
+      });
 
       return;
     }
